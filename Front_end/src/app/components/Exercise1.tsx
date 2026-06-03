@@ -1,25 +1,44 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowLeft, Plus, Database } from "lucide-react";
+import { getAddition1, getAddition2 } from "../../contracts/sum";
 
 export function Exercise1() {
-  const [value1, setValue1] = useState("");
-  const [value2, setValue2] = useState("");
+  const [value1, setValue1] = useState<number | undefined>();
+  const [value2, setValue2] = useState<number | undefined>();
   const [result, setResult] = useState<number | null>(null);
   const [storageResult, setStorageResult] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSum = () => {
-    const num1 = parseFloat(value1) || 0;
-    const num2 = parseFloat(value2) || 0;
-    setResult(num1 + num2);
+  const handleSum = async () => {
+    try {
+      setLoading(true);
+
+      const sum = await getAddition2(value1, value2);
+
+      setResult(sum);
+    } catch (error) {
+      console.log("Something went wrong: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSumStorage = () => {
-    // Simulating storage variables - in a real Web3 app, this would read from blockchain
-    const storageVar1 = 100;
-    const storageVar2 = 250;
-    setStorageResult(storageVar1 + storageVar2);
+  const handleSumStorage = async () => {
+    try {
+      setLoading(true);
+
+      const sum = await getAddition1();
+
+      setStorageResult(sum);
+    } catch (error) {
+      console.log("Something went wrong: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+
 
   return (
     <div className="min-h-screen flex flex-col p-8">
@@ -55,7 +74,7 @@ export function Exercise1() {
                 <input
                   type="number"
                   value={value1}
-                  onChange={(e) => setValue1(e.target.value)}
+                  onChange={(e) => setValue1(Number(e.target.value))}
                   placeholder="Enter first number"
                   className="w-full bg-white/5 border border-white/30 rounded-xl px-6 py-4 text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
                 />
@@ -68,7 +87,7 @@ export function Exercise1() {
                 <input
                   type="number"
                   value={value2}
-                  onChange={(e) => setValue2(e.target.value)}
+                  onChange={(e) => setValue2(Number(e.target.value))}
                   placeholder="Enter second number"
                   className="w-full bg-white/5 border border-white/30 rounded-xl px-6 py-4 text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
                 />
@@ -94,12 +113,22 @@ export function Exercise1() {
               </button>
             </div>
 
+            {
+              loading && (
+                <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-xl p-6">
+                  <div className="text-yellow-200 text-sm mb-1">
+                    Calculating...
+                  </div>
+                </div>
+              )
+            }
+
             {/* Results */}
             {(result !== null || storageResult !== null) && (
               <div className="space-y-4">
                 {result !== null && (
                   <div className="bg-cyan-500/20 border border-cyan-400/30 rounded-xl p-6">
-                    <div className="text-cyan-200 text-sm mb-1">Result</div>
+                    <div className="text-cyan-200 text-sm mb-1">Result: </div>
                     <div className="text-4xl font-bold text-cyan-400">
                       {result}
                     </div>
@@ -109,7 +138,7 @@ export function Exercise1() {
                 {storageResult !== null && (
                   <div className="bg-purple-500/20 border border-purple-400/30 rounded-xl p-6">
                     <div className="text-purple-200 text-sm mb-1">
-                      Storage Sum (100 + 250)
+                      Storage Sum:
                     </div>
                     <div className="text-4xl font-bold text-purple-400">
                       {storageResult}
