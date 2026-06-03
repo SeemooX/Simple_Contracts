@@ -1,17 +1,18 @@
 import { Link } from "react-router";
 import { Rocket } from "lucide-react";
 
+const exercises = [
+  { id: 1, title: "Sum Calculator", path: "/exercise-1" },
+  { id: 2, title: "Exercise 2", path: "/exercise-2" },
+  { id: 3, title: "Exercise 3", path: "/exercise-3" },
+  { id: 4, title: "Exercise 4", path: "/exercise-4" },
+  { id: 5, title: "Exercise 5", path: "/exercise-5" },
+  { id: 6, title: "Exercise 6", path: "/exercise-6" },
+  { id: 7, title: "Exercise 7", path: "/exercise-7" },
+  { id: 8, title: "Exercise 8", path: "/exercise-8" },
+];
+
 export function MainPage() {
-  const exercises = [
-    { id: 1, title: "Sum Calculator", path: "/exercise-1" },
-    { id: 2, title: "Exercise 2", path: "/exercise-2" },
-    { id: 3, title: "Exercise 3", path: "/exercise-3" },
-    { id: 4, title: "Exercise 4", path: "/exercise-4" },
-    { id: 5, title: "Exercise 5", path: "/exercise-5" },
-    { id: 6, title: "Exercise 6", path: "/exercise-6" },
-    { id: 7, title: "Exercise 7", path: "/exercise-7" },
-    { id: 8, title: "Exercise 8", path: "/exercise-8" },
-  ];
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
