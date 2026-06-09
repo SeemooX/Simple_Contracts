@@ -2,8 +2,16 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowLeft, Plus, Database } from "lucide-react";
 import { getAddition1, getAddition2 } from "../../contracts/sum";
+import { SUM_CONTRACT_ADDRESS } from "../../lib/ethers";
+import { useOutletContext } from "react-router";
+
+type OutletContextType = {
+  address: string | null;
+};
 
 export function Exercise1() {
+  const { address } = useOutletContext<OutletContextType>();
+  /* const [txHash, setTxHash] = useState(""); */
   const [value1, setValue1] = useState<number | undefined>();
   const [value2, setValue2] = useState<number | undefined>();
   const [result, setResult] = useState<number | null>(null);
@@ -147,6 +155,52 @@ export function Exercise1() {
                 )}
               </div>
             )}
+          </div>
+        </div>
+      </div>
+
+{/*       {
+        txHash && (
+          <div className="mt-6 bg-green-500/10 border border-green-400/30 rounded-xl p-6">
+            <h2 className="text-xl font-bold text-green-400 mb-4">
+              Transaction Information
+            </h2>
+
+            <div>
+              <div className="text-green-200 text-sm mb-1">
+                Transaction Hash
+              </div>
+
+              <div className="text-white font-mono break-all">
+                {txHash}
+              </div>
+            </div>
+          </div>
+        )
+      } */}
+
+      <div className="bg-white/5 border border-white/20 rounded-xl p-6 mb-8">
+        <h2 className="text-xl font-bold text-cyan-400 mb-4">
+          Contract Information
+        </h2>
+
+        <div className="space-y-3">
+          <div>
+            <div className="text-cyan-200/70 text-sm mb-1">
+              Contract Address
+            </div>
+            <div className="text-white font-mono break-all">
+              {SUM_CONTRACT_ADDRESS}
+            </div>
+          </div>
+
+          <div>
+            <div className="text-cyan-200/70 text-sm mb-1">
+              Connected Account
+            </div>
+            <div className="text-white font-mono break-all">
+              {address || "Not Connected"}
+            </div>
           </div>
         </div>
       </div>

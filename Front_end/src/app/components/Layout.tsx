@@ -32,6 +32,8 @@ export function Layout() {
       }
     };
 
+
+
     window.ethereum.on("accountsChanged", handleAccountsChanged);
     window.ethereum.on("chainChanged", handleChainChanged);
 
@@ -55,7 +57,7 @@ export function Layout() {
         }
       {/* Content */}
       <div className="relative z-10">
-        <Outlet />
+        <Outlet context={{ address }}/>
       </div>
     </div>
   );
