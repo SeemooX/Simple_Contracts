@@ -1,18 +1,28 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
+import { estPositif } from "../../contracts/estPositif";
 
 export function Exercise4() {
-  const [numberInput, setNumberInput] = useState("");
-  const [result, setResult] = useState<{ isPositive: boolean; value: number } | null>(null);
+  const [numberInput, setNumberInput] = useState<string>("");
+  const [result, setResult] = useState<{ isPositive: boolean; value: number | string | undefined } | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleCheckSign = () => {
-    const num = parseFloat(numberInput);
-    if (!isNaN(num)) {
+  const handleCheckSign = async () => {
+    try {
+      setLoading(true);
+
+      const isPositive = await estPositif(numberInput);
+      console.log(isPositive);   
+
       setResult({
-        isPositive: num >= 0,
-        value: num
+        isPositive,
+        value: numberInput
       });
+    } catch (error) {
+      console.error("Error checking sign:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,12 +69,21 @@ export function Exercise4() {
                 Check Sign
               </button>
 
-              {result !== null && (
-                <div className={`${
-                  result.isPositive
-                    ? "bg-green-500/20 border-green-400/30"
-                    : "bg-red-500/20 border-red-400/30"
-                } border rounded-2xl p-8 transition-all duration-300`}>
+              {
+                loading && (
+                  <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-xl p-6">
+                    <div className="text-yellow-200 text-sm mb-1">
+                      Converting...
+                    </div>
+                  </div>
+                )
+              }
+
+              {(result !== null && loading === false) && (
+                <div className={`${result.isPositive
+                  ? "bg-green-500/20 border-green-400/30"
+                  : "bg-red-500/20 border-red-400/30"
+                  } border rounded-2xl p-8 transition-all duration-300`}>
                   <div className="flex items-center justify-center mb-4">
                     {result.isPositive ? (
                       <CheckCircle2 className="w-16 h-16 text-green-400" />
@@ -73,14 +92,12 @@ export function Exercise4() {
                     )}
                   </div>
                   <div className="text-center">
-                    <div className={`text-3xl font-bold mb-2 ${
-                      result.isPositive ? "text-green-400" : "text-red-400"
-                    }`}>
+                    <div className={`text-3xl font-bold mb-2 ${result.isPositive ? "text-green-400" : "text-red-400"
+                      }`}>
                       {result.value}
                     </div>
-                    <div className={`text-xl font-semibold ${
-                      result.isPositive ? "text-green-300" : "text-red-300"
-                    }`}>
+                    <div className={`text-xl font-semibold ${result.isPositive ? "text-green-300" : "text-red-300"
+                      }`}>
                       {result.isPositive ? (
                         result.value === 0 ? "Zero (Neutral)" : "Positive Number ✓"
                       ) : (

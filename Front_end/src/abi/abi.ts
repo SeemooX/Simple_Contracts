@@ -21,6 +21,6 @@ export const stringManagementABI = [
   "function compare(string a, string b) pure returns (bool)"
 ];
 
-export const estPostifABI = [
-  "function estPositif(uint256 x) pure returns (bool)"
+export const estPositifABI = [
+  "function estPositif(int256 x) pure returns (bool)"
 ];
