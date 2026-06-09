@@ -1,23 +1,43 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowLeft, ArrowDownUp } from "lucide-react";
+import { etherToWei, weiToEther } from "../../contracts/etherWeiConvert";
 
 export function Exercise2() {
-  const [etherValue, setEtherValue] = useState("");
-  const [weiValue, setWeiValue] = useState("");
+  const [etherValue, setEtherValue] = useState<number | undefined>();
+  const [weiValue, setWeiValue] = useState<string | undefined>();
   const [etherToWeiResult, setEtherToWeiResult] = useState<string | null>(null);
   const [weiToEtherResult, setWeiToEtherResult] = useState<string | null>(null);
+  const [loadingFirst, setLoadingFirst] = useState(false);
+  const [loadingSecond, setLoadingSecond] = useState(false);
 
-  const handleEtherToWei = () => {
-    const ether = parseFloat(etherValue) || 0;
-    const wei = ether * 1e18;
-    setEtherToWeiResult(wei.toLocaleString('fullwide', { useGrouping: false }));
+  const handleEtherToWei = async () => {
+    try {
+      setLoadingFirst(true);
+
+      const sum = await etherToWei(etherValue);
+
+      setEtherToWeiResult(sum);
+    } catch (error) {
+      console.log("Something went wrong: ", error);
+    } finally {
+      setLoadingFirst(false);
+    }
   };
 
-  const handleWeiToEther = () => {
-    const wei = parseFloat(weiValue) || 0;
-    const ether = wei / 1e18;
-    setWeiToEtherResult(ether.toString());
+  const handleWeiToEther = async () => {
+    try {
+      setLoadingSecond(true);
+
+      const sum = await weiToEther(weiValue);
+      console.log("here is sum", sum);
+      
+      setWeiToEtherResult(sum);
+    } catch (error) {
+      console.log("Something went wrong: ", error);
+    } finally {
+      setLoadingSecond(false);
+    }
   };
 
   return (
@@ -55,7 +75,7 @@ export function Exercise2() {
                   <input
                     type="number"
                     value={etherValue}
-                    onChange={(e) => setEtherValue(e.target.value)}
+                    onChange={(e) => setEtherValue(Number(e.target.value))}
                     placeholder="Enter Ether amount"
                     className="w-full bg-white/5 border border-white/30 rounded-xl px-6 py-4 text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
                   />
@@ -67,7 +87,18 @@ export function Exercise2() {
                   <ArrowDownUp className="w-5 h-5" />
                   Convert to Wei
                 </button>
-                {etherToWeiResult !== null && (
+
+                {
+                  loadingFirst && (
+                    <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-xl p-6">
+                      <div className="text-yellow-200 text-sm mb-1">
+                        Converting...
+                      </div>
+                    </div>
+                  )
+                }
+
+                {(etherToWeiResult !== null && loadingFirst === false) && (
                   <div className="bg-cyan-500/20 border border-cyan-400/30 rounded-xl p-6">
                     <div className="text-cyan-200 text-sm mb-1">Result in Wei</div>
                     <div className="text-2xl font-bold text-cyan-400 break-all">
@@ -105,10 +136,21 @@ export function Exercise2() {
                   <ArrowDownUp className="w-5 h-5" />
                   Convert to Ether
                 </button>
-                {weiToEtherResult !== null && (
+
+                {
+                  loadingSecond && (
+                    <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-xl p-6">
+                      <div className="text-yellow-200 text-sm mb-1">
+                        Converting...
+                      </div>
+                    </div>
+                  )
+                }
+
+                {(weiToEtherResult !== null && loadingSecond === false) && (
                   <div className="bg-purple-500/20 border border-purple-400/30 rounded-xl p-6">
                     <div className="text-purple-200 text-sm mb-1">Result in Ether</div>
-                    <div className="text-2xl font-bold text-purple-400 break-all">
+                    <div className="tesxt-2xl font-bold text-purple-400 break-all">
                       {weiToEtherResult}
                     </div>
                   </div>

@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { Contract } from "ethers";
 import { BrowserProvider } from "ethers";
-import { sumABI } from "../abi/abi";
+import { sumABI, ethConversionABI, stringManagementABI, estPostifABI } from "../abi/abi";
 
 export const SUM_CONTRACT_ADDRESS = "0x113658A92D3d76e6050E4E3596d0b7670b57a831";
 const STRING_MANAGE_CONTRACT_ADDRESS = "0xDA614D68ffE73b8a767059864527d265fC570120";
@@ -45,6 +45,21 @@ export const getSumContract = async () => {
         const signer = await provider.getSigner();
 
         return new Contract(SUM_CONTRACT_ADDRESS, sumABI, signer);
+    } catch (error) {
+        console.log("Failed to get Contract, error: ", error);
+    }
+}
+
+export const getEtherWeiConvertContract = async () => {
+    try {
+        if (!window.ethereum) {
+            throw new Error("Wallet Not found");
+        }
+
+        const provider = new BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+
+        return new Contract(ETHER_CONVERSION_CONTRACT_ADDRESS, ethConversionABI, signer);
     } catch (error) {
         console.log("Failed to get Contract, error: ", error);
     }
